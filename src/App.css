@@ -1,0 +1,32 @@
+.App {
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+button {
+  width: 400px;
+  height: 100px;
+  display: block;
+  padding: 40px;
+  font-size: 20px;
+  color: red;
+  background-color: black;
+}
+
+input {
+  padding: 15px;
+  width: 370px;
+  font-size: 20px;
+  margin: 15px;
+}
+p {
+  font-size: 22px;
+  margin: 8px;
+}
+.seperator {
+  margin: 18px 0;
+  border-bottom: 3px grey solid;
+}
