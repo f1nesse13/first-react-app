@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Radium, { StyleRoot } from 'radium';
 import Person from './Person'
 import './App.css';
 
@@ -36,7 +37,6 @@ class App extends Component {
     persons[personIndex] = person // sets the states persons array = to the person found
     this.setState({persons: persons}) // sets state to the new value of persons
   }
-
   deletePersonHandler = (personIndex) => { // Person index gets passed to function from the onClick event
     const peeps = [...this.state.persons]
     peeps.splice(personIndex, 1)
@@ -52,8 +52,13 @@ class App extends Component {
       color: 'white',
       border: '1px black solid',
       padding: '16px',
-      margin: '10px'
-  }
+      margin: '10px',
+      ':hover': {
+        backgroundColor: 'lightblue',
+        fontWeight: 'bold'
+      }       // We get this functionality from Radium. We must wrap the exported class with Radium()
+      
+    }
 
     let persons = null; // starts as a blank screen 
     if ( this.state.showPerson ) { // if we click toggle this condition becomes true and returns our div with our persons
@@ -70,8 +75,13 @@ class App extends Component {
       </div>
     )
      style.backgroundColor = 'red'; // Changes background color if condition is true
-  }
-  
+     style[':hover'] = {
+       backgroundColor: 'salmon',
+       color: 'black'
+     }  // This functionality also comes from Radium. When we are accessing our style variable and not assigning 
+        // we need to access our psuedo class with brackets
+    }
+
 
     const classes = [] // Gives us a empty array to push styles into if conditions are met
     if (this.state.persons.length <= 2) {
@@ -80,10 +90,10 @@ class App extends Component {
     if (this.state.persons.length <= 1) {
       classes.push('bold')
     }
-  
-   
+      
     return (
-     <div className="App">
+      <StyleRoot> {/* StyleRoot has to wrap the application when using Radium for mediaqueries or keyframes - imported from radium */}
+      <div className="App">
         {persons}
         <p className={ classes.join(' ') } > Conditional class assignment example  </p>
         <button key='btn1' style={style} onClick={this.togglePersonHandler}> Click to toggle  </button>
@@ -91,8 +101,11 @@ class App extends Component {
         <button key='btn3' style={style} onClick={() => this.nameEventHandler("Foo")}> Another way of passing a argument (arrow)</button>
         <h4> Bind is more efficient but can get away with arrow function with small apps </h4>
       </div>
+      </StyleRoot>
     );
   }
 }
 
-export default App
+
+
+export default Radium(App); // Higher order function - gives us the ability to use media queries and pseudo classes within our Javascript.
