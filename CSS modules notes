@@ -1,0 +1,49 @@
+CSS modules is a module we can activate through webpack. We first need to run npm run eject to eject all files so that we are able to
+ access them. This will not change our app but will give us access to everything that runs behind the scenes with create-react-app.
+ After running npm run eject we can navigate to config > webpack.config.dev.js. Once opened scroll down to modules section and find the
+ module that handles css extensions. Then we will add 'modules: true' in the options and 'localIdentName: '[name]__[local]__[hash: base64:5]'.
+ Once that is done we can save and open the production webpack config and add these same two lines to the css extension module. After we are done
+ with configuration we can import our CSS classes with 'import variableName from './App.css'' then use any of our css classes using
+ {variableName.red}
+-- Using CSS Modules -- 
+If we use a classes.App on our container div and make a ' .App button ' class in our CSS the button style will still apply to all buttons inside
+of that div. CSS modules will import all classes into our .js file for use even if they are nested. -EX. ' .App button.Red:hover ' - We accessed 
+the .Red class using classes.Red even tho our CSS selector is nested.
+
+-- Media Queries -- 
+Media Queries will work as long as the class is applied to the element - See Person.js and Person.css
+ --------------------
+ From React 16 course
+ --------------------
+
+ More on CSS Modules
+Section 5, Lecture 66
+CSS Modules are a relatively new concept (you can dive super-deep into them here: https://github.com/css-modules/css-modules). With CSS modules, you can write normal CSS code and make sure, that it only applies to a given component.
+
+It's not using magic for that, instead it'll simply automatically generate unique CSS class names for you. And by importing a JS object and assigning classes from there, you use these dynamically generated, unique names. So the imported JS object simply exposes some properties which hold the generated CSS class names as values.
+
+Example:
+
+In Post.css File
+
+.Post {
+    color: red;
+}
+In Post Component File
+
+import classes from './Post.css';
+ 
+const post = () => (
+    <div className={classes.Post}>...</div>
+);
+Here, classes.Post  refers to an automatically generated Post  property on the imported classes  object. That property will in the end simply hold a value like Post__Post__ah5_1 .
+
+So your .Post  class was automatically transformed to a different class (Post__Post__ah5_1 ) which is unique across the application. You also can't use it accidentally in other components because you don't know the generated string! You can only access it through the classes  object. And if you import the CSS file (in the same way) in another component, the classes  object there will hold a Post  property which yields a different (!) CSS class name. Hence it's scoped to a given component.
+
+By the way, if you somehow also want to define a global (i.e. un-transformed) CSS class in such a .css  file, you can prefix the selector with :global .
+
+Example:
+
+:global .Post { ... } 
+
+Now you can use className="Post"  anywhere in your app and receive that styling.

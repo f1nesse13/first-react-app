@@ -1,20 +1,32 @@
-import React, { Component } from 'react';
-import Person from './Person'
-import './App.css';
+import React, { PureComponent } from 'react';
+import Persons from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit';
+import withClass2 from '../hoc/withClass2'
+import classes from './App.css';
+import Aux from '../hoc/Auxiliry'
 
+// PureComponent does a shallow check on the Virtual DOM for changes and if there are none it sets shouldComponentUpdate to false
 
-class App extends Component {
+class App extends PureComponent {
   constructor(props) {
     super(props)
-
+    console.log('Lifecycle - [App.js] Inside constructor')
     this.state = {
       persons: [
         { id: "d328nc747", name: "Joe", age: "30", dogName: "Aurora", dogAge: "2" },
         { id: "d209189c3", name: "Vincent", age: "27", dogName: "Spot", dogAge: "8" },
         { id: "d8324e092", name: "Elizabeth", age: "23", dogName: "Cupcake", dogAge: "16" }
       ],
-      showPerson: false
+      showPerson: false,
+      counter: 0
+
     }
+  }
+  componentWillMount() {
+    console.log('Lifecycle - [App.js] Inside componentWillMount')
+  }
+  componentDidMount() {
+    console.log('Lifecycle - [App.js] Inside componentDidMount')
   }
   nameEventHandler = (newName) => {
     this.setState({
@@ -44,55 +56,31 @@ class App extends Component {
   }
   togglePersonHandler = () => {
     const show = this.state.showPerson
-    this.setState({showPerson: !show}) // toggles our persons array if condition is true
-  }
+    this.setState( ( prevState, props ) => {
+      console.log(props)
+    return {showPerson: !show, counter: prevState.counter + 1} // toggles our persons array if condition is true
+    })
+}
   render() {
-    let style = {
-      backgroundColor: 'blue',
-      color: 'white',
-      border: '1px black solid',
-      padding: '16px',
-      margin: '10px'
-  }
-
+  
+    console.log('Lifecycle - [App.js] Inside render')
     let persons = null; // starts as a blank screen 
     if ( this.state.showPerson ) { // if we click toggle this condition becomes true and returns our div with our persons
-      persons = (
-      <div>
-      {this.state.persons.map((person, index) => {
-        return <Person 
-        key={person.id}
-        inputChange={( event ) => this.inputHandler( event, person.id )}
-        click={() => this.deletePersonHandler(index)}
-         name={person.name} age={person.age}
-          dogName={person.dogName} dogAge={person.dogAge} />
-      })}
-      </div>
-    )
-     style.backgroundColor = 'red'; // Changes background color if condition is true
+      persons = <Persons 
+      clicked={this.deletePersonHandler}
+      persons={this.state.persons}
+      changed={this.inputHandler} />
   }
   
-
-    const classes = [] // Gives us a empty array to push styles into if conditions are met
-    if (this.state.persons.length <= 2) {
-      classes.push('red')
-    }
-    if (this.state.persons.length <= 1) {
-      classes.push('bold')
-    }
-  
-   
     return (
-     <div className="App">
+      // WithClass is a component that returns the children inside a wrapping div that accepts a className - Can be used anywhere we need to wrap elements
+     <Aux>
         {persons}
-        <p className={ classes.join(' ') } > Conditional class assignment example  </p>
-        <button key='btn1' style={style} onClick={this.togglePersonHandler}> Click to toggle  </button>
-        <button key='btn2' style={style} onClick={this.nameEventHandler.bind(this, "Regular on Click")}> Click for Change! (bind)</button>
-        <button key='btn3' style={style} onClick={() => this.nameEventHandler("Foo")}> Another way of passing a argument (arrow)</button>
-        <h4> Bind is more efficient but can get away with arrow function with small apps </h4>
-      </div>
+        <Cockpit title={this.props.title} persons={this.state.persons} showPerson={this.state.showPerson} toggle={this.togglePersonHandler} nameHandler={this.nameEventHandler} />
+        <div>{this.state.counter}</div>
+      </Aux>
     );
   }
 }
 
-export default App
+export default withClass2(App, classes.App);

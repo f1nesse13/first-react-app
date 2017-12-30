@@ -1,11 +1,11 @@
 import React from 'react';
-import ('./Person.css')
+import classes from './Person.css'
 
 const person = (props) => {
   
    
     return (
-        <div className='seperator' >
+        <div className={classes.seperator} >
             <p>Hi my name is {props.name} and I am {props.age} years old. </p>
             <p> I have a dog named {props.dogName} and shes only {props.dogAge}</p>
             <h3> Type below to change the names - two way binding </h3>
